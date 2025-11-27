@@ -207,6 +207,9 @@ aside {
   font-weight: 600;
   transition: all 0.2s;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-outline:hover {
@@ -232,8 +235,8 @@ aside {
 
 .toggle-switch {
   position: relative;
-  width: 44px;
-  height: 24px;
+  width: 52px;
+  height: 28px;
 }
 
 .toggle-switch input {
@@ -251,26 +254,55 @@ aside {
   bottom: 0;
   background-color: var(--border-color);
   transition: 0.4s;
-  border-radius: 24px;
+  border-radius: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px;
+  overflow: hidden;
 }
 
 .slider:before {
   position: absolute;
   content: "";
-  height: 18px;
-  width: 18px;
-  left: 3px;
-  bottom: 3px;
+  height: 20px;
+  width: 20px;
+  left: 4px;
+  bottom: 4px;
   background-color: white;
   transition: 0.4s;
   border-radius: 50%;
+  z-index: 2;
+}
+
+.icon-sun,
+.icon-moon {
+  z-index: 1;
+  transition: opacity 0.3s;
+}
+
+.icon-sun {
+  color: #f59e0b;
+  opacity: 1;
+}
+.icon-moon {
+  color: #818cf8;
+  opacity: 0.5;
 }
 
 input:checked + .slider {
-  background-color: var(--accent-color);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
 }
 input:checked + .slider:before {
-  transform: translateX(20px);
+  transform: translateX(24px);
+  background-color: var(--accent-color);
+}
+input:checked + .slider .icon-sun {
+  opacity: 0.5;
+}
+input:checked + .slider .icon-moon {
+  opacity: 1;
 }
 
 /* Main Content */
@@ -332,12 +364,12 @@ main {
   background-color: rgba(239, 68, 68, 0.05);
 }
 
-/* Notes Grid (Masonry-ish) */
+/* Notes Grid (Standard Grid for Stability) */
 #notes-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 24px;
-  align-items: start;
+  align-items: stretch; /* Ensure cards are same height */
   padding-bottom: 100px;
 }
 
@@ -351,6 +383,7 @@ main {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  height: 100%; /* Fill grid cell */
 }
 
 .card:hover {
@@ -370,6 +403,7 @@ main {
   line-height: 1.6;
   font-size: 0.95rem;
   white-space: pre-wrap;
+  flex: 1; /* Push meta down */
 }
 
 .card-meta {
@@ -378,7 +412,7 @@ main {
   align-items: center;
   font-size: 0.8rem;
   color: var(--text-secondary);
-  margin-top: 8px;
+  margin-top: auto;
   padding-top: 16px;
   border-top: 1px solid var(--border-color);
 }
