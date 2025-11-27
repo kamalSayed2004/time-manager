@@ -1,4 +1,4 @@
-class Toast {
+export class Toast {
   constructor() {
     this.container = document.createElement("div");
     this.container.className = "toast-container";
@@ -12,10 +12,9 @@ class Toast {
 
     this.container.appendChild(toast);
 
-    // Remove after 3 seconds
     setTimeout(() => {
       toast.style.opacity = "0";
-      toast.style.transform = "translateY(100%)";
+      toast.style.transform = "translate(-50%, 100%)"; // Adjusted for new CSS
       setTimeout(() => {
         if (this.container.contains(toast)) {
           this.container.removeChild(toast);
@@ -25,5 +24,4 @@ class Toast {
   }
 }
 
-const toast = new Toast();
-window.toast = toast;
+export const toast = new Toast();
