@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Schedule notes</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <aside>
+      <a href="index.html">Schedules</a>
+
+      <div class="timer">
+        <h2>Timer</h2>
+        <div class="time">
+          <span class="hours" id="timer-hours">00</span>
+          <span class="minutes" id="timer-minutes">00</span>
+          <span class="seconds" id="timer-seconds">00</span>
+        </div>
+        <div class="buttons">
+          <button class="start" id="timer-start">Start</button>
+          <button class="stop" id="timer-stop">Stop</button>
+          <button class="reset" id="timer-reset">Reset</button>
+        </div>
+      </div>
+
+      <div class="countdown">
+        <h2>Countdown</h2>
+        <div class="time">
+          <input
+            type="text"
+            id="countdown-hours"
+            class="hours"
+            placeholder="H"
+            maxlength="2"
+          />
+          <input
+            type="text"
+            id="countdown-minutes"
+            class="minutes"
+            placeholder="M"
+            maxlength="2"
+          />
+          <input
+            type="text"
+            id="countdown-seconds"
+            class="seconds"
+            placeholder="S"
+            maxlength="2"
+          />
+        </div>
+        <div class="buttons">
+          <button class="start" id="countdown-start">Start</button>
+          <button class="stop" id="countdown-stop">Stop</button>
+          <button class="reset" id="countdown-reset">Reset</button>
+        </div>
+      </div>
+
+      <label for="theme" class="theme">Dark Theme</label>
+      <input type="checkbox" name="theme" id="theme" />
+      <button id="reset">Reset Messages</button>
+    </aside>
+    <main>
+      <div id="notes-container">
+        <!-- Notes will be dynamically generated here -->
+      </div>
+      <button id="add-note">+</button>
+    </main>
+    <script src="main.js"></script>
+  </body>
+</html>
