@@ -4,7 +4,8 @@
   "description": "Time Manager Website",
   "main": "server.js",
   "scripts": {
-    "start": "serve ."
+    "start": "serve .",
+    "serve": "serve ."
   },
   "keywords": [],
   "author": "",

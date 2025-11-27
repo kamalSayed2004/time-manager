@@ -1,145 +1,102 @@
-<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Schedule notes</title>
+    <title>Time Manager</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <aside>
-      <a href="index.html">Schedules</a>
+      <div class="brand">
+        <h1>Time Manager</h1>
+      </div>
 
-      <div class="timer">
-        <h2>Timer</h2>
-        <div class="time">
-          <span class="hours" id="timer-hours">00</span>
-          <span class="minutes" id="timer-minutes">00</span>
-          <span class="seconds" id="timer-seconds">00</span>
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-filter="all">All Notes</button>
+        <button class="nav-item" data-filter="work">Work</button>
+        <button class="nav-item" data-filter="personal">Personal</button>
+        <button class="nav-item" data-filter="ideas">Ideas</button>
+      </nav>
+
+      <div class="timer-container">
+        <div class="timer">
+          <h2>Timer</h2>
+          <div class="time">
+            <span class="hours" id="timer-hours">00</span>
+            <span class="minutes" id="timer-minutes">00</span>
+            <span class="seconds" id="timer-seconds">00</span>
+          </div>
+          <div class="buttons">
+            <button class="start" id="timer-start">Start</button>
+            <button class="stop" id="timer-stop">Stop</button>
+            <button class="reset" id="timer-reset">Reset</button>
+          </div>
         </div>
-        <div class="buttons">
-          <button class="start" id="timer-start">Start</button>
-          <button class="stop" id="timer-stop">Stop</button>
-          <button class="reset" id="timer-reset">Reset</button>
+
+        <div class="countdown">
+          <h2>Countdown</h2>
+          <div class="time">
+            <input
+              type="text"
+              id="countdown-hours"
+              class="hours"
+              placeholder="00"
+              maxlength="2"
+            />
+            <input
+              type="text"
+              id="countdown-minutes"
+              class="minutes"
+              placeholder="00"
+              maxlength="2"
+            />
+            <input
+              type="text"
+              id="countdown-seconds"
+              class="seconds"
+              placeholder="00"
+              maxlength="2"
+            />
+          </div>
+          <div class="buttons">
+            <button class="start" id="countdown-start">Start</button>
+            <button class="stop" id="countdown-stop">Stop</button>
+            <button class="reset" id="countdown-reset">Reset</button>
+          </div>
         </div>
       </div>
 
-      <div class="countdown">
-        <h2>Countdown</h2>
-        <div class="time">
-          <input
-            type="text"
-            id="countdown-hours"
-            class="hours"
-            placeholder="H"
-            maxlength="2"
-          />
-          <input
-            type="text"
-            id="countdown-minutes"
-            class="minutes"
-            placeholder="M"
-            maxlength="2"
-          />
-          <input
-            type="text"
-            id="countdown-seconds"
-            class="seconds"
-            placeholder="S"
-            maxlength="2"
-          />
-        </div>
-        <div class="buttons">
-          <button class="start" id="countdown-start">Start</button>
-          <button class="stop" id="countdown-stop">Stop</button>
-          <button class="reset" id="countdown-reset">Reset</button>
+      <div class="theme-toggle">
+        <label for="theme" class="theme-label">Dark Mode</label>
+        <div class="toggle-switch">
+          <input type="checkbox" name="theme" id="theme" />
+          <span class="slider"></span>
         </div>
       </div>
-
-      <label for="theme" class="theme">Dark Theme</label>
-      <input type="checkbox" name="theme" id="theme" />
-      <button id="reset">Reset Messages</button>
     </aside>
     <main>
+      <header class="main-header">
+        <div class="search-bar">
+          <input type="text" id="search-input" placeholder="Search notes..." />
+        </div>
+        <div class="header-actions">
+          <button id="reset" class="btn-secondary">Clear All</button>
+        </div>
+      </header>
+
       <div id="notes-container">
         <!-- Notes will be dynamically generated here -->
       </div>
-      <button id="add-note">+</button>
+      <button id="add-note" class="floating-btn">+</button>
     </main>
+    <script src="toast.js"></script>
     <script src="main.js"></script>
   </body>
 </html>
-=======
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Schedule notes</title>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <aside>
-      <a href="index.html">Schedules</a>
-
-      <div class="timer">
-        <h2>Timer</h2>
-        <div class="time">
-          <span class="hours" id="timer-hours">00</span>
-          <span class="minutes" id="timer-minutes">00</span>
-          <span class="seconds" id="timer-seconds">00</span>
-        </div>
-        <div class="buttons">
-          <button class="start" id="timer-start">Start</button>
-          <button class="stop" id="timer-stop">Stop</button>
-          <button class="reset" id="timer-reset">Reset</button>
-        </div>
-      </div>
-
-      <div class="countdown">
-        <h2>Countdown</h2>
-        <div class="time">
-          <input
-            type="text"
-            id="countdown-hours"
-            class="hours"
-            placeholder="H"
-            maxlength="2"
-          />
-          <input
-            type="text"
-            id="countdown-minutes"
-            class="minutes"
-            placeholder="M"
-            maxlength="2"
-          />
-          <input
-            type="text"
-            id="countdown-seconds"
-            class="seconds"
-            placeholder="S"
-            maxlength="2"
-          />
-        </div>
-        <div class="buttons">
-          <button class="start" id="countdown-start">Start</button>
-          <button class="stop" id="countdown-stop">Stop</button>
-          <button class="reset" id="countdown-reset">Reset</button>
-        </div>
-      </div>
-
-      <label for="theme" class="theme">Dark Theme</label>
-      <input type="checkbox" name="theme" id="theme" />
-      <button id="reset">Reset Messages</button>
-    </aside>
-    <main>
-      <div id="notes-container">
-        <!-- Notes will be dynamically generated here -->
-      </div>
-      <button id="add-note">+</button>
-    </main>
-    <script src="main.js"></script>
-  </body>
-</html>
->>>>>>> 92b478e952d2932fe2f7da19518788ade22f8d5f
