@@ -26,12 +26,46 @@
       </nav>
 
       <div class="timer-container">
+        <!-- Stopwatch Section -->
         <div class="timer">
+          <h2>Stopwatch</h2>
+          <div class="time">
+            <span class="hours" id="stopwatch-hours">00</span>
+            <span class="minutes" id="stopwatch-minutes">00</span>
+            <span class="seconds" id="stopwatch-seconds">00</span>
+          </div>
+          <div class="buttons">
+            <button class="start" id="stopwatch-start">Start</button>
+            <button class="stop" id="stopwatch-stop">Stop</button>
+            <button class="reset" id="stopwatch-reset">Reset</button>
+          </div>
+        </div>
+
+        <!-- Timer Section -->
+        <div class="countdown">
           <h2>Timer</h2>
           <div class="time">
-            <span class="hours" id="timer-hours">00</span>
-            <span class="minutes" id="timer-minutes">00</span>
-            <span class="seconds" id="timer-seconds">00</span>
+            <input
+              type="text"
+              id="timer-hours"
+              class="hours"
+              placeholder="00"
+              maxlength="2"
+            />
+            <input
+              type="text"
+              id="timer-minutes"
+              class="minutes"
+              placeholder="00"
+              maxlength="2"
+            />
+            <input
+              type="text"
+              id="timer-seconds"
+              class="seconds"
+              placeholder="00"
+              maxlength="2"
+            />
           </div>
           <div class="buttons">
             <button class="start" id="timer-start">Start</button>
@@ -39,38 +73,17 @@
             <button class="reset" id="timer-reset">Reset</button>
           </div>
         </div>
+      </div>
 
-        <div class="countdown">
-          <h2>Countdown</h2>
-          <div class="time">
-            <input
-              type="text"
-              id="countdown-hours"
-              class="hours"
-              placeholder="00"
-              maxlength="2"
-            />
-            <input
-              type="text"
-              id="countdown-minutes"
-              class="minutes"
-              placeholder="00"
-              maxlength="2"
-            />
-            <input
-              type="text"
-              id="countdown-seconds"
-              class="seconds"
-              placeholder="00"
-              maxlength="2"
-            />
-          </div>
-          <div class="buttons">
-            <button class="start" id="countdown-start">Start</button>
-            <button class="stop" id="countdown-stop">Stop</button>
-            <button class="reset" id="countdown-reset">Reset</button>
-          </div>
-        </div>
+      <div class="data-management">
+        <button id="export-data" class="btn-outline">Export Data</button>
+        <button id="import-data" class="btn-outline">Import Data</button>
+        <input
+          type="file"
+          id="import-file"
+          style="display: none"
+          accept=".json"
+        />
       </div>
 
       <div class="theme-toggle">

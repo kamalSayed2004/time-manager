@@ -5,10 +5,40 @@ const searchInput = document.getElementById("search-input");
 const filterButtons = document.querySelectorAll(".nav-item");
 const themeToggle = document.getElementById("theme");
 const resetBtn = document.getElementById("reset");
+const exportBtn = document.getElementById("export-data");
+const importBtn = document.getElementById("import-data");
+const importFile = document.getElementById("import-file");
 
 // State
 let currentFilter = "all";
 let currentSearch = "";
+
+// Sound Effect (Simple Beep)
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+function playAlertSound() {
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+
+  oscillator.type = "sine";
+  oscillator.frequency.value = 880; // A5
+  gainNode.gain.value = 0.1;
+
+  oscillator.start();
+
+  // Beep pattern
+  setTimeout(() => {
+    gainNode.gain.value = 0;
+  }, 200);
+  setTimeout(() => {
+    gainNode.gain.value = 0.1;
+  }, 400);
+  setTimeout(() => {
+    oscillator.stop();
+  }, 600);
+}
 
 // ===================================================================================
 // Core Functions
@@ -161,12 +191,10 @@ function createNoteOverlay(existingNote = null) {
   overlay.appendChild(modal);
   document.body.appendChild(overlay);
 
-  // Set category value if editing
   if (existingNote?.category) {
     document.getElementById("note-category").value = existingNote.category;
   }
 
-  // Event Listeners
   document.getElementById("cancel-note").onclick = () =>
     document.body.removeChild(overlay);
 
@@ -213,7 +241,6 @@ function createNoteOverlay(existingNote = null) {
     document.body.removeChild(overlay);
   };
 
-  // Close on backdrop click
   overlay.onclick = (e) => {
     if (e.target === overlay) document.body.removeChild(overlay);
   };
@@ -223,29 +250,22 @@ function createNoteOverlay(existingNote = null) {
 // Event Listeners
 // ===================================================================================
 
-// Search
 searchInput.addEventListener("input", (e) => {
   currentSearch = e.target.value.toLowerCase();
   loadNotes();
 });
 
-// Filters
 filterButtons.forEach((btn) => {
   btn.addEventListener("click", () => {
-    // Update UI
     filterButtons.forEach((b) => b.classList.remove("active"));
     btn.classList.add("active");
-
-    // Update State
     currentFilter = btn.dataset.filter;
     loadNotes();
   });
 });
 
-// Add Note
 addNoteBtn.addEventListener("click", () => createNoteOverlay());
 
-// Theme Toggle
 themeToggle.addEventListener("change", (e) => {
   if (e.target.checked) {
     document.documentElement.setAttribute("data-theme", "dark");
@@ -256,7 +276,6 @@ themeToggle.addEventListener("change", (e) => {
   }
 });
 
-// Reset
 resetBtn.addEventListener("click", () => {
   if (confirm("Delete all notes? This cannot be undone.")) {
     localStorage.removeItem("notes");
@@ -265,88 +284,134 @@ resetBtn.addEventListener("click", () => {
   }
 });
 
+// Data Management
+exportBtn.addEventListener("click", () => {
+  const notes = getNotes();
+  const dataStr =
+    "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(notes));
+  const downloadAnchorNode = document.createElement("a");
+  downloadAnchorNode.setAttribute("href", dataStr);
+  downloadAnchorNode.setAttribute("download", "time_manager_data.json");
+  document.body.appendChild(downloadAnchorNode);
+  downloadAnchorNode.click();
+  downloadAnchorNode.remove();
+  window.toast.show("Data exported successfully");
+});
+
+importBtn.addEventListener("click", () => importFile.click());
+
+importFile.addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    try {
+      const notes = JSON.parse(event.target.result);
+      if (Array.isArray(notes)) {
+        saveNotes(notes);
+        loadNotes();
+        window.toast.show("Data imported successfully");
+      } else {
+        throw new Error("Invalid format");
+      }
+    } catch (err) {
+      window.toast.show("Error importing data", "error");
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = ""; // Reset input
+});
+
 // Initialize
 document.addEventListener("DOMContentLoaded", () => {
-  // Load Theme
   const savedTheme = localStorage.getItem("theme");
   if (savedTheme === "dark") {
     themeToggle.checked = true;
     document.documentElement.setAttribute("data-theme", "dark");
   }
-
-  // Load Notes
   loadNotes();
-
-  // Initialize Timer (Existing functionality preserved)
+  initStopwatch();
   initTimer();
 });
 
-// Make global for inline onclick handlers
 window.editNote = editNote;
 window.deleteNote = deleteNote;
 
 // ===================================================================================
-// Timer Logic (Preserved & Adapted)
+// Stopwatch Logic (Counts Up)
+// ===================================================================================
+function initStopwatch() {
+  let interval;
+  let seconds = 0;
+  const display = {
+    h: document.getElementById("stopwatch-hours"),
+    m: document.getElementById("stopwatch-minutes"),
+    s: document.getElementById("stopwatch-seconds"),
+  };
+
+  document.getElementById("stopwatch-start").onclick = () => {
+    clearInterval(interval);
+    interval = setInterval(() => {
+      seconds++;
+      updateDisplay();
+    }, 1000);
+  };
+
+  document.getElementById("stopwatch-stop").onclick = () =>
+    clearInterval(interval);
+
+  document.getElementById("stopwatch-reset").onclick = () => {
+    clearInterval(interval);
+    seconds = 0;
+    updateDisplay();
+  };
+
+  function updateDisplay() {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+
+    display.h.textContent = h.toString().padStart(2, "0");
+    display.m.textContent = m.toString().padStart(2, "0");
+    display.s.textContent = s.toString().padStart(2, "0");
+  }
+}
+
+// ===================================================================================
+// Timer Logic (Counts Down)
 // ===================================================================================
 function initTimer() {
-  let timerInterval;
-  let timerSeconds = 0;
-  const timerDisplay = {
+  let interval;
+  const inputs = {
     h: document.getElementById("timer-hours"),
     m: document.getElementById("timer-minutes"),
     s: document.getElementById("timer-seconds"),
   };
 
+  // Input validation
+  Object.values(inputs).forEach((input) => {
+    input.addEventListener("input", (e) => {
+      e.target.value = e.target.value.replace(/[^0-9]/g, "").slice(0, 2);
+    });
+    input.addEventListener("blur", (e) => {
+      if (e.target.value) e.target.value = e.target.value.padStart(2, "0");
+    });
+  });
+
   document.getElementById("timer-start").onclick = () => {
-    clearInterval(timerInterval);
-    timerInterval = setInterval(() => {
-      timerSeconds++;
-      updateTimerDisplay();
-    }, 1000);
-  };
-
-  document.getElementById("timer-stop").onclick = () =>
-    clearInterval(timerInterval);
-
-  document.getElementById("timer-reset").onclick = () => {
-    clearInterval(timerInterval);
-    timerSeconds = 0;
-    updateTimerDisplay();
-  };
-
-  function updateTimerDisplay() {
-    const h = Math.floor(timerSeconds / 3600);
-    const m = Math.floor((timerSeconds % 3600) / 60);
-    const s = timerSeconds % 60;
-
-    if (timerDisplay.h)
-      timerDisplay.h.textContent = h.toString().padStart(2, "0");
-    if (timerDisplay.m)
-      timerDisplay.m.textContent = m.toString().padStart(2, "0");
-    if (timerDisplay.s)
-      timerDisplay.s.textContent = s.toString().padStart(2, "0");
-  }
-
-  // Countdown Logic
-  let countdownInterval;
-  const countdownInputs = {
-    h: document.getElementById("countdown-hours"),
-    m: document.getElementById("countdown-minutes"),
-    s: document.getElementById("countdown-seconds"),
-  };
-
-  document.getElementById("countdown-start").onclick = () => {
-    let h = parseInt(countdownInputs.h.value) || 0;
-    let m = parseInt(countdownInputs.m.value) || 0;
-    let s = parseInt(countdownInputs.s.value) || 0;
+    let h = parseInt(inputs.h.value) || 0;
+    let m = parseInt(inputs.m.value) || 0;
+    let s = parseInt(inputs.s.value) || 0;
     let totalSeconds = h * 3600 + m * 60 + s;
 
     if (totalSeconds <= 0) return;
 
-    clearInterval(countdownInterval);
-    countdownInterval = setInterval(() => {
+    clearInterval(interval);
+    interval = setInterval(() => {
       if (totalSeconds <= 0) {
-        clearInterval(countdownInterval);
+        clearInterval(interval);
+        playAlertSound();
         window.toast.show("Timer finished!", "success");
         return;
       }
@@ -356,19 +421,18 @@ function initTimer() {
       const dm = Math.floor((totalSeconds % 3600) / 60);
       const ds = totalSeconds % 60;
 
-      countdownInputs.h.value = dh.toString().padStart(2, "0");
-      countdownInputs.m.value = dm.toString().padStart(2, "0");
-      countdownInputs.s.value = ds.toString().padStart(2, "0");
+      inputs.h.value = dh.toString().padStart(2, "0");
+      inputs.m.value = dm.toString().padStart(2, "0");
+      inputs.s.value = ds.toString().padStart(2, "0");
     }, 1000);
   };
 
-  document.getElementById("countdown-stop").onclick = () =>
-    clearInterval(countdownInterval);
+  document.getElementById("timer-stop").onclick = () => clearInterval(interval);
 
-  document.getElementById("countdown-reset").onclick = () => {
-    clearInterval(countdownInterval);
-    countdownInputs.h.value = "";
-    countdownInputs.m.value = "";
-    countdownInputs.s.value = "";
+  document.getElementById("timer-reset").onclick = () => {
+    clearInterval(interval);
+    inputs.h.value = "";
+    inputs.m.value = "";
+    inputs.s.value = "";
   };
 }
